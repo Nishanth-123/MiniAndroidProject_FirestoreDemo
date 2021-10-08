@@ -23,31 +23,20 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
+        android:text="Add"
         android:textAllCaps="false"
-        android:onClick="saveData"
+        android:onClick="addNote"
         android:id="@+id/save"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Fetch"
+        android:text="Load"
         android:textAllCaps="false"
-        android:onClick="fetchData"
+        android:onClick="loadData"
         android:id="@+id/fetch"/>
-    <Button
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete Description"
-        android:textAllCaps="false"
-        android:onClick="deleteDescription"
-        android:id="@+id/deleteDesc"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete Notes"
-        android:textAllCaps="false"
-        android:onClick="deleteNotes"
-        android:id="@+id/deleteNote"/>
+        android:layout_height="wrap_content">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,4 +44,5 @@
         android:textStyle="bold|italic"
         android:textSize="24dp"
         android:text="Fetched data appears here"/>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>
