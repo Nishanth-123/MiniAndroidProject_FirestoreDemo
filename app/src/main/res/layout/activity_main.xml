@@ -20,6 +20,12 @@
         android:lines="10"
         android:gravity="start|top"
         android:hint="Description" />
+    <EditText
+        android:id="@+id/priority"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Priority" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,7 +38,7 @@
         android:layout_height="wrap_content"
         android:text="Load"
         android:textAllCaps="false"
-        android:onClick="loadData"
+        android:onClick="loadNotes"
         android:id="@+id/fetch"/>
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

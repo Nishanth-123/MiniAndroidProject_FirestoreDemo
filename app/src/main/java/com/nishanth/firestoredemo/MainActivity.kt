@@ -4,15 +4,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 
 class MainActivity : AppCompatActivity() {
@@ -23,6 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var title: EditText
     lateinit var description: EditText
+    lateinit var priority:EditText
     lateinit var result: TextView
     private val db = FirebaseFirestore.getInstance()
     private val noteRef = db.document("Notebook/First Note")
@@ -32,22 +30,23 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         title = findViewById(R.id.title)
         description = findViewById(R.id.text)
+        priority=findViewById(R.id.priority)
         result = findViewById(R.id.result)
     }
 
     override fun onStart() {
         super.onStart()
-        collectionRef.addSnapshotListener(this, object:EventListener<QuerySnapshot>{
-            override fun onEvent(querySnapshot: QuerySnapshot?, e: FirebaseFirestoreException?) {
+        collectionRef.addSnapshotListener(this, object : EventListener<QuerySnapshot> {
+            override fun onEvent(querySnapshots: QuerySnapshot?, e: FirebaseFirestoreException?) {
                 if (e != null) {
                     result.setText(e.message.toString())
                     return
                 }
-                val notesData=""
-                querySnapshots?.let{
-                    for(querySnapshot in it ){
-                        val note:Note=querySnapshot.toObject(Note.class)
-                                notesData+="Title : ${note.title}\\n\" + \"Title : ${note.description}\n"
+                var notesData = ""
+                querySnapshots?.let {
+                    for (querySnapshot in it) {
+                        val note: Note = querySnapshot.toObject(Note::class.java)
+                        notesData += "Title : ${note.title}\nTitle : ${note.description}\nPriority : ${note.priority}\n\n"
                     }
                 }
                 result.setText(notesData)
@@ -74,7 +73,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun addNote(view: View) {
-        val note = Note(title.text.toString(), description.text.toString())
+        val note = Note()
+        note.title=title.text.toString()
+        note.description=description.text.toString()
+        note.priority=priority.text.toString().toInt()
         collectionRef.add(note)
         /*
         val note = HashMap<String, Any>()
@@ -119,14 +121,18 @@ class MainActivity : AppCompatActivity() {
                 }
 
          */
-        collectionRef.get()
-                .addOnSuccessListener(object:OnSuccessListener<QuerySnapshot>{
+        collectionRef
+                .whereGreaterThanOrEqualTo("priority", 2)
+                .orderBy("priority", Query.Direction.DESCENDING)
+                .limit(3)
+                .get()
+                .addOnSuccessListener(object : OnSuccessListener<QuerySnapshot> {
                     override fun onSuccess(querySnapshots: QuerySnapshot?) {
-                        val notesData=""
-                        querySnapshots?.let{
-                            for(querySnapshot in it ){
-                                val note:Note=querySnapshot.toObject(Note.class)
-                                notesData+="Title : ${note.title}\\n\" + \"Title : ${note.description}\n"
+                        var notesData = ""
+                        querySnapshots?.let {
+                            for (querySnapshot in it) {
+                                val note: Note = querySnapshot.toObject(Note::class.java)
+                                notesData += "Title : ${note.title}\nTitle : ${note.description}\nPriority : ${note.priority}\n\n"
                             }
                         }
                         result.setText(notesData)
